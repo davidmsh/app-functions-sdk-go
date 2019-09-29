@@ -1,5 +1,5 @@
 [Writable]
-LogLevel = 'TRACE'
+LogLevel = 'INFO'
 
     [Writable.StoreAndForward]
     Enabled = false
@@ -41,3 +41,5 @@ File = './logs/simple-filter-xml.log'
 Type="http"
 
 [ApplicationSettings]
+DeviceID = "7cccb1a0-8e26-4feb-95c7-423e49559017"
+CommandID = "6663264d-c62e-49c6-bec3-96964570a4f9"

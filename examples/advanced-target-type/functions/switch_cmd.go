@@ -23,11 +23,14 @@ import (
 )
 
 const (
-	deviceId  = "7cccb1a0-8e26-4feb-95c7-423e49559017"
-	commandId = "6663264d-c62e-49c6-bec3-96964570a4f9"
+	// deviceId  = "7cccb1a0-8e26-4feb-95c7-423e49559017"
+	// commandId = "6663264d-c62e-49c6-bec3-96964570a4f9"
 
 	jsonSwitchOn  = "{\"SwitchButton\": \"true\"}"
 	jsonSwitchOff = "{\"SwitchButton\": \"false\"}"
+
+	appConfigDeviceID  = "DeviceID"
+	appConfigCommandID = "CommandID"
 )
 
 type Switch struct {
@@ -35,7 +38,7 @@ type Switch struct {
 }
 
 func SendSwitchCommand(edgexcontext *appcontext.Context, params ...interface{}) (bool, interface{}) {
-	edgexcontext.LoggingClient.Debug("Format Phone Number 2")
+	edgexcontext.LoggingClient.Debug("Sending Switch Command")
 
 	if len(params) < 1 {
 		// We didn't receive a result
@@ -54,26 +57,33 @@ func SendSwitchCommand(edgexcontext *appcontext.Context, params ...interface{}) 
 		return false, nil
 	}
 
+	deviceId := edgexcontext.Configuration.ApplicationSettings[appConfigDeviceID]
+	commandId := edgexcontext.Configuration.ApplicationSettings[appConfigCommandID]
 	var cmd string
 
 	ctx := context.WithValue(context.Background(), "", "")
 
 	switch status := sw.Status; status {
 	case "on":
+		edgexcontext.LoggingClient.Info("Switch On")
 		cmd = jsonSwitchOn
 	case "off":
+		edgexcontext.LoggingClient.Info("Switch Off")
 		cmd = jsonSwitchOff
 	default:
 		edgexcontext.LoggingClient.Error("Invalid switch status: " + status)
 		return false, nil
 	}
 
+	edgexcontext.LoggingClient.Info("Device ID: " + deviceId)
+	edgexcontext.LoggingClient.Info("Command ID: " + commandId)
 	r, err := edgexcontext.CommandClient.Put(deviceId, commandId, cmd, ctx)
 
 	if err == nil {
 		edgexcontext.LoggingClient.Debug("Response : " + r)
 	} else {
-		edgexcontext.LoggingClient.Error("Error sending request " + err.Error())
+		edgexcontext.LoggingClient.Error("Error sending request: " + err.Error())
+
 	}
 
 	return true, cmd
