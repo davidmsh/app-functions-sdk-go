@@ -41,9 +41,9 @@ func main() {
 	// 2) This is our functions pipeline configuration, the collection of functions to
 	// execute every time an event is triggered.
 	err := edgexSdk.SetFunctionsPipeline(
-		functions.FormatPhoneDisplay,             // Expects a Person as set by TargetType
-		functions.PrintXmlToConsole,              // Expects XML string
-		transforms.NewOutputData().SetOutputData, // Expects string or []byte. Returns XML formatted Person with PhoneDisplay set sent as the trigger response
+		functions.SendSwitchCommand,
+		functions.PrintToConsole,
+		transforms.NewOutputData().SetOutputData,
 	)
 
 	if err != nil {

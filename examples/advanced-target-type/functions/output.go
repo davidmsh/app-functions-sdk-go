@@ -22,15 +22,14 @@ import (
 	"github.com/edgexfoundry/app-functions-sdk-go/appcontext"
 )
 
-func PrintXmlToConsole(edgexcontext *appcontext.Context, params ...interface{}) (bool, interface{}) {
-	edgexcontext.LoggingClient.Debug("PrintXmlToConsole")
+func PrintToConsole(edgexcontext *appcontext.Context, params ...interface{}) (bool, interface{}) {
+	edgexcontext.LoggingClient.Debug("PrintToConsole")
 
 	if len(params) < 1 {
 		// We didn't receive a result
 		return false, nil
 	}
 
-	fmt.Println("[MIKE] Print to console...")
 	fmt.Println(params[0].(string))
 
 	return true, params[0]
