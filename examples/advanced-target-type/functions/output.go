@@ -30,6 +30,7 @@ func PrintXmlToConsole(edgexcontext *appcontext.Context, params ...interface{}) 
 		return false, nil
 	}
 
+	fmt.Println("[MIKE] Print to console...")
 	fmt.Println(params[0].(string))
 
 	return true, params[0]

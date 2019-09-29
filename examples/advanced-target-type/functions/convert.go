@@ -17,63 +17,46 @@
 package functions
 
 import (
-	"encoding/xml"
-	"fmt"
+	"context"
+	"encoding/json"
 
 	"github.com/edgexfoundry/app-functions-sdk-go/appcontext"
 )
 
-type PhoneInfo struct {
-	CountryCode int `json:"country_code"`
-	AreaCode    int `json:"area_code"`
-	LocalPrefix int `json:"local_prefix"`
-	LocalNumber int `json:"local_number"`
-}
-
-type Person struct {
-	FirstName    string    `json:"first_name"`
-	LastName     string    `json:"last_name"`
-	Phone        PhoneInfo `json:"phone"`
-	PhoneDisplay string    `json:"phone_display"`
+type Switch struct {
+	SwitchButton string
 }
 
 func FormatPhoneDisplay(edgexcontext *appcontext.Context, params ...interface{}) (bool, interface{}) {
-
-	edgexcontext.LoggingClient.Debug("Format Phone Number")
-
-	if len(params) < 1 {
-		// We didn't receive a result
-		return false, nil
-	}
-
-	person, ok := params[0].(Person)
-	if !ok {
-		edgexcontext.LoggingClient.Error("type received is not a Person")
-	}
-
-	person.PhoneDisplay = fmt.Sprintf("+%02d(%03d) %03d-%04d",
-		person.Phone.CountryCode, person.Phone.AreaCode, person.Phone.LocalPrefix, person.Phone.LocalNumber)
-
-	return true, person
-}
-
-func ConvertToXML(edgexcontext *appcontext.Context, params ...interface{}) (bool, interface{}) {
-	edgexcontext.LoggingClient.Debug("Convert to XML")
+	edgexcontext.LoggingClient.Debug("Format Phone Number 2")
 
 	if len(params) < 1 {
 		// We didn't receive a result
 		return false, nil
 	}
 
-	person, ok := params[0].(Person)
+	if edgexcontext.CommandClient == nil {
+		edgexcontext.LoggingClient.Error("Command client is nil")
+	} else {
+		ctx := context.WithValue(context.Background(), "key", "value")
+
+		// r, err := edgexcontext.CommandClient.Put("api/v1/device/name/Simple-Device01", "Switch", "{\"SwitchButton\": \"true\"}", ctx)
+		// r, err := edgexcontext.CommandClient.Put("name/Simple-Device01", "Switch", "{\"SwitchButton\": \"true\"}", ctx)
+		r, err := edgexcontext.CommandClient.Put("7cccb1a0-8e26-4feb-95c7-423e49559017", "6663264d-c62e-49c6-bec3-96964570a4f9", "{\"SwitchButton\": \"true\"}", ctx)
+
+		if err == nil {
+			edgexcontext.LoggingClient.Debug("Response : " + r)
+		} else {
+			edgexcontext.LoggingClient.Error("Error sending request " + err.Error())
+		}
+	}
+
+	sw, ok := params[0].(Switch)
 	if !ok {
-		edgexcontext.LoggingClient.Error("type received is not a Person")
+		edgexcontext.LoggingClient.Error("type received is not a Switch")
 	}
 
-	result, err := xml.MarshalIndent(person, "", "   ")
-	if err != nil {
-		return false, fmt.Sprintf("Error parsing XML. Error: %s", err.Error())
-	}
+	res, _ := json.Marshal(sw)
 
-	return true, string(result)
+	return true, string(res)
 }

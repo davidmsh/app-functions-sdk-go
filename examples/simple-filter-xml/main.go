@@ -42,7 +42,8 @@ func main() {
 
 	// 2) Since our FilterByDeviceName Function requires the list of device names we would
 	// like to search for, we'll go ahead and define that now.
-	deviceNames := []string{"Random-Float-Device"}
+	// deviceNames := []string{"Random-Integer-Generator01"}
+	deviceNames := []string{"Simple-Device01"}
 
 	// 3) This is our pipeline configuration, the collection of functions to
 	// execute every time an event is triggered.

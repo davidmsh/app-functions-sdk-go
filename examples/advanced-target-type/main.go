@@ -32,7 +32,7 @@ const (
 func main() {
 	// 1) First thing to do is to create an instance of the EdgeX SDK with your TargetType set
 	//    and initialize it. Note that the TargetType is a pointer to an instance of the type.
-	edgexSdk := &appsdk.AppFunctionsSDK{ServiceKey: serviceKey, TargetType: &functions.Person{}}
+	edgexSdk := &appsdk.AppFunctionsSDK{ServiceKey: serviceKey, TargetType: &functions.Switch{}}
 	if err := edgexSdk.Initialize(); err != nil {
 		edgexSdk.LoggingClient.Error(fmt.Sprintf("SDK initialization failed: %v\n", err))
 		os.Exit(-1)
@@ -42,7 +42,6 @@ func main() {
 	// execute every time an event is triggered.
 	err := edgexSdk.SetFunctionsPipeline(
 		functions.FormatPhoneDisplay,             // Expects a Person as set by TargetType
-		functions.ConvertToXML,                   // Expects a Person
 		functions.PrintXmlToConsole,              // Expects XML string
 		transforms.NewOutputData().SetOutputData, // Expects string or []byte. Returns XML formatted Person with PhoneDisplay set sent as the trigger response
 	)
